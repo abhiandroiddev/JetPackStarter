@@ -34,6 +34,7 @@
 package com.raywenderlich.android.imet.data
 
 import android.app.Application
+import android.arch.lifecycle.LiveData
 import com.raywenderlich.android.imet.data.db.PeopleDao
 import com.raywenderlich.android.imet.data.db.PeopleDatabase
 import com.raywenderlich.android.imet.data.model.People
@@ -48,7 +49,15 @@ class PeopleRepository(application: Application) {
     peopleDao = peopleDatabase.peopleDao()
   }
 
-  fun getAllPeople() : List<People>{
+ /* fun getAllPeople() : List<People>{
+    return peopleDao.getAll()
+  }*/
+
+  /**
+   * LiveData Implementation
+   */
+
+  fun getAllPeople() : LiveData<List<People>> {
     return peopleDao.getAll()
   }
 

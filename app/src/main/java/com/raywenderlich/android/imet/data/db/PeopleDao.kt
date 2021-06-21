@@ -15,8 +15,15 @@ interface PeopleDao {
     /**
      * Select All
      */
+/*    @Query("SELECT * FROM People ORDER BY id DESC")
+    fun getAll() : List<People>*/
+
+    /**
+     * Live Data implementation in getAll()
+     */
+
     @Query("SELECT * FROM People ORDER BY id DESC")
-    fun getAll() : List<People>
+    fun getAll() : LiveData<List<People>>
 
     /**
      * Insert

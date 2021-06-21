@@ -33,6 +33,8 @@
 
 package com.raywenderlich.android.imet.ui.list
 
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -45,6 +47,7 @@ import com.raywenderlich.android.imet.ui.add.AddPeopleActivity
 import com.raywenderlich.android.imet.ui.details.PeopleDetailsActivity
 import kotlinx.android.synthetic.main.fragment_peoples_list.*
 
+
 /**
  * The Fragment to show people list
  */
@@ -54,18 +57,32 @@ class PeoplesListFragment : Fragment(),
     SearchView.OnCloseListener {
 
   private lateinit var searchView: SearchView
+  private lateinit var viewModel: PeoplesListViewModel
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setHasOptionsMenu(true)
+    viewModel = ViewModelProviders.of(this).get(PeoplesListViewModel::class.java)
   }
 
   override fun onResume() {
     super.onResume()
 
-    val people = (activity?.application as IMetApp).getPeopleRepository().getAllPeople()
-    populatePeopleList(people)
+    /*val people = (activity?.application as IMetApp).getPeopleRepository().getAllPeople()
+    populatePeopleList(people)*/
+
+    /**
+     * Implementation of Live Data
+     */
+   /* val peopleRepository = (activity?.application as IMetApp).getPeopleRepository()
+    peopleRepository.getAllPeople().observe(this, Observer{ peopleList ->
+      populatePeopleList(peopleList !!)
+    })*/
+
+
   }
+
+
 
   override fun onCreateView(
       inflater: LayoutInflater, container: ViewGroup?,
@@ -86,6 +103,14 @@ class PeoplesListFragment : Fragment(),
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+
+    //Start Observing peopleList
+
+    viewModel.getPeopleList().observe(this, Observer <List<People>>{ peoples ->
+      peoples?.let {
+        populatePeopleList(peoples)
+      }
+    })
 
     // Navigate to add people
     addFab.setOnClickListener {
